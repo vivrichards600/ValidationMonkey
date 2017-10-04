@@ -4,13 +4,15 @@ A simple framework to automate testing various field validations normally carrie
 
 This is just a proof of concept and very rough and ready!! Lot's of things to work out, refactor etc..
 
-The framework is used along with Selenium to randomly fill in form fields and interact with the web page you give it. The application will log it's actions and screenshots as it goes along to a new .HTML file saved in C:\temp (this will be refactored soon!). 
+The framework is designed to be used along with Selenium WebDriver to randomly fill in form fields and interact with the web page you give it. The application will log it's actions and screenshots as it goes along to a new .HTML file which will get saved to C:\temp (this will be refactored soon!). 
 
-Validation Monkey will randomly decided whether to fill in all fields, no fields or random fields as is navigates through the given url. Currently there are only a few example string, special characters, numbers, incorrect dates, basic script injection - this will be refactored to include a larger list similar to the options currently offered by Bug Magnet (Chrome Extension). This framework also randomly decides whether to click a button, link or press enter in an input field, randomly navigating through the website. Each time the Validation Monkey is run it will always act in a different way.
+Validation Monkey will randomly decided whether to fill in all fields, no fields or random fields as is navigates through the web. Currently there are only a few example strings; special characters, numbers, incorrect dates, basic script injection - this will be refactored to include a larger list similar to the options currently offered by Bug Magnet (Chrome Extension). This framework also randomly decides whether to click a button, link or press enter in an input field, and so will often randomly navigate away from the initial given url through various paths of your website (to get it to crawl further give it more runs when Starting the Monkey!
+
+Each time the Validation Monkey is run it will always act in a different way, inputting different values, to a different number of fields, navigating to different areas of your application.
 
 ## How to use
 
-As part of your Selenium test just Start the Monkey! Currently you can specify how many times to run or by providing a 0 value the framework will pick a random number of runs for you. 
+As part of your Selenium test just call StartMonkey! Currently you can specify how many times to run or if you provide a 0 value the framework will pick a random number of runs for you. A run is basically each time the page is reloaded it will attempt to 'run' some validation. To get the page to crawl and run more validation on your site, give it a higher number of runs! 
 
 ``` c#
  // Let the Monkey loose and run 5 times!
