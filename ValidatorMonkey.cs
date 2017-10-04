@@ -1,24 +1,10 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
-using Cookie = OpenQA.Selenium.Cookie;
-using OpenQA.Selenium.Interactions;
 
 public static class ValidatorMonkey
 {
-
-    //############## NOTES
-
-    //### LOGGING
-    // LOG ERRORS, SCREENSHOTS.....
-    // check if we have validation, system errors etc... vscreen assuming all validation errors wrapped in validation-summary-errors class
-    //  validationErrors = driver.FindElement(By.CssSelector(".validation-summary-errors")).FindElements(By.CssSelector("li")).Count;
-
     //### INPUT TYPES
     // Read from json file various input values to monkey about with 
     //Bug Magnet:
