@@ -23,12 +23,15 @@ public static class ValidatorMonkey
     private static string reportFilename = string.Format("{0:yyyy-MM-ddTHH-mm-ss}-VMR.html", DateTime.Now);
     private static IWebDriver driver;
 
+    /// <summary>
+    /// Start validator monkey populating fields an clicking buttons & links
+    /// </summary>
+    /// <param name="numberOfTimes">Number of times to run</param>
+    /// <param name="Driver">Selenium WebDriver being used</param>
     public static void StartMonkey(int numberOfTimes, IWebDriver Driver)
     {
-        driver = Driver;
-
+        driver = Driver; // set the WebDriver we are using
         CreateReport(); // created html file with valid html template
-
         WriteToReport(string.Format("<p class='lead'>Monkey Business started {0}, on URL {1}</p>", DateTime.Now.ToString(), driver.Url));
 
         //if user doesn't specify number of runs then select a number at random up to 20 for now..
@@ -57,21 +60,20 @@ public static class ValidatorMonkey
                     break;
             }
         }
-
         WriteToReport("</div></div>");
         WriteToReport(string.Format("<h3>Validator Monkey ended {0}</h3>", DateTime.Now.ToString()));
-
         FinishReport(); // add closing tags for html report file 
     }
 
+    /// <summary>
+    /// Input string in to random input fields
+    /// </summary>
+    /// <param name="driver">Selenium WebDriver being used</param>
     private static void InputRandomFields(IWebDriver driver)
     {
         IList<IWebElement> textInputs = driver.FindElements(By.CssSelector("input"));   // get all input fields on page
-
         int randomNumberOfInputFields = randomNumber.Next(0, textInputs.Count); // select a random number of fields to input
         int randomNumberOfTextAreaInputFields = randomNumber.Next(0, textInputs.Count); // select a random number of fields to input
-        //Debug.WriteLine(string.Format("-- Attempting to Input in to '{0}' fields", randomNumberOfInputFields));
-
         WriteToReport(string.Format("- Attempting to randomly complete {0} of {1} fields", randomNumberOfInputFields, textInputs.Count));
 
         for (int i = 0; i < randomNumberOfInputFields; i++)
@@ -80,7 +82,6 @@ public static class ValidatorMonkey
             String randomInput = inputs[randomNumber.Next(0, inputs.Count)]; // grab an input string at random
             try
             {
-                //TODO: check if input is of type text or search - if so input a value, if not we may need to select an option or tick a box??
                 textInputs[randomInputField].Clear(); //clear input out before input
                 textInputs[randomInputField].SendKeys(randomInput);  //input the random stuff 
                 WriteToReport(string.Format("- Inputting '{0}'", randomInput));
@@ -92,18 +93,19 @@ public static class ValidatorMonkey
         }
     }
 
+    /// <summary>
+    /// Input strings in to all input fields
+    /// </summary>
+    /// <param name="driver">Selenium WebDriver being used</param>
     private static void InputAllFields(IWebDriver driver)
     {
         IList<IWebElement> textInputs = driver.FindElements(By.CssSelector("input")); // get all text input fields on page
-        // IList<IWebElement> textAreaInputs = driver.FindElements(By.CssSelector("textarea"));   // get all textarea input fields on page
         WriteToReport(string.Format("- Attempting to complete all {0} fields", textInputs.Count));
-
         for (int i = 0; i < textInputs.Count; i++)
         {
             String randomInput = inputs[randomNumber.Next(0, inputs.Count)]; // grab an input string at random
             try
             {
-                //TODO: check if input is of type text or search - if so input a value, if not we may need to select an option or tick a box??
                 try
                 {
                     // assume we are dealing with text box
@@ -117,7 +119,6 @@ public static class ValidatorMonkey
                     textInputs[i].SendKeys(Keys.Space);
                     WriteToReport(string.Format("- Selecting '{0}'", randomInput));
                 }
-
             }
             catch
             {
@@ -126,17 +127,17 @@ public static class ValidatorMonkey
         }
     }
 
+    /// <summary>
+    /// Submit form
+    /// </summary>
+    /// <param name="driver">Selenium WebDriver being used</param>
     private static void SubmitForm(IWebDriver driver)
     {
-
         WriteToReport("- Screen before form submission");
         TakeScreenshot(); // screenshot before submit form
-
         IList<IWebElement> textInputs = driver.FindElements(By.CssSelector("input")); // get all text input fields on page
-
-        // work out how many buttons and links the form has
-        IList<IWebElement> buttons = driver.FindElements(By.CssSelector("input[type='submit']"));
-        IList<IWebElement> links = driver.FindElements(By.TagName("a"));
+        IList<IWebElement> buttons = driver.FindElements(By.CssSelector("input[type='submit']")); // get page buttons
+        IList<IWebElement> links = driver.FindElements(By.TagName("a")); // get page links
 
         //before we just attempt to submit on enter keypress - if we have both buttons and links, pick one at random
         if (buttons.Count > 0 && links.Count > 0)
@@ -214,35 +215,44 @@ public static class ValidatorMonkey
             }
         }
         TakeScreenshot(); //screenshot after form submission
-
         WriteToReport(string.Format("<p>Monkey navigated to URL: '{0}'", driver.Url));
     }
 
+    /// <summary>
+    /// Take a screenshot of the current WebDriver window
+    /// </summary>
     private static void TakeScreenshot()
     {
         var screenshot = ((ITakesScreenshot)driver).GetScreenshot().AsBase64EncodedString;
         WriteToReport(string.Format("<img src='data:image/jpeg;base64,{0}' width='650px'>", screenshot));
     }
 
+    /// <summary>
+    /// Create a new HTML Report
+    /// </summary>
     private static void CreateReport()
     {
-
         File.AppendAllLines(@"C:\temp\" + reportFilename, new[] {
         "<html><head><title>Validator Monkey</title><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'/></head><body><div class='container'><h1>Validator Monkey</h1>"
         });
     }
 
+    /// <summary>
+    /// Finish writing the valid HTML markup for the report
+    /// </summary>
     private static void FinishReport()
     {
-
         File.AppendAllLines(@"C:\temp\" + reportFilename, new[] {
         "</div></body></html>"
         });
     }
 
+    /// <summary>
+    /// Append line to HTML report
+    /// </summary>
+    /// <param name="logText"></param>
     private static void WriteToReport(string logText)
     {
         File.AppendAllLines(@"C:\temp\" + reportFilename, new[] { "<br>" + logText }); //add log text and go to new line
     }
-
 }
